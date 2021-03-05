@@ -28,7 +28,6 @@ const tabArray = [
 const GetStarted = ({navigation}) => {
   const [active, setActive] = useState('');
   let todays = new Date().getHours();
-  alert(todays);
   return (
     <View style={[Style.Container, Style.rowDirection]}>
       <View style={Style.mainView}>
@@ -39,7 +38,6 @@ const GetStarted = ({navigation}) => {
           <Text style={Style.Title}>Sweet home!</Text>
         </View>
         <View style={Style.subTitle}>
-          {/* <Text style={Style.greetingText}>Good Afternoon</Text> */}
           <Text style={Style.greetingText}>
             {todays <= 11
               ? 'Good Morning'
