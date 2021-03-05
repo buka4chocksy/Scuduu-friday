@@ -45,6 +45,8 @@ export default StyleSheet.create({
     fontStyle: 'normal',
     fontSize: 12,
     lineHeight: 15,
+    marginBottom: 10,
+    marginTop: 40,
   },
   nameStyle: {
     fontSize: 36,
@@ -150,6 +152,15 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
   },
+  activeStyleIcon: {
+    height: 60,
+    width: 60,
+    backgroundColor: '#FB7B05',
+    marginBottom: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+  },
   sideIcon2: {
     height: 60,
     width: 60,
@@ -206,9 +217,18 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 15,
+    marginLeft: 12,
+  },
+  switchActiveStyle: {
+    backgroundColor: '#12B293',
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+    marginLeft: 12,
   },
   switchText: {
     marginTop: 7,
-    left: -10,
   },
 });
