@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import Style from './getStartedStyle';
 import Bugger from '../../assets/bugger.png';
 import Bell from '../../assets/bell.png';
@@ -18,17 +18,17 @@ import micro from '../../assets/micro.png';
 import palor from '../../assets/palor.png';
 import cross from '../../assets/cross.png';
 const tabArray = [
-  { icon: bed, name: 'room' },
-  { icon: chair, name: 'palour' },
-  { icon: micro, name: 'kitchen' },
-  { icon: bathtop, name: 'bathroom' },
-  { icon: alarm, name: 'alarm' },
+  {icon: bed, name: 'room'},
+  {icon: chair, name: 'palour'},
+  {icon: micro, name: 'kitchen'},
+  {icon: bathtop, name: 'bathroom'},
+  {icon: alarm, name: 'alarm'},
 ];
 
-const GetStarted = ({ navigation }) => {
-
+const GetStarted = ({navigation}) => {
   const [active, setActive] = useState('');
-
+  let todays = new Date().getHours();
+  alert(todays);
   return (
     <View style={[Style.Container, Style.rowDirection]}>
       <View style={Style.mainView}>
@@ -39,7 +39,17 @@ const GetStarted = ({ navigation }) => {
           <Text style={Style.Title}>Sweet home!</Text>
         </View>
         <View style={Style.subTitle}>
-          <Text style={Style.greetingText}>Good Afternoon</Text>
+          {/* <Text style={Style.greetingText}>Good Afternoon</Text> */}
+          <Text style={Style.greetingText}>
+            {todays <= 11
+              ? 'Good Morning'
+              : todays >= 11
+              ? 'Good Afternoon'
+              : todays >= 17
+              ? 'Good Evening'
+              : null}
+          </Text>
+
           <Text style={Style.nameStyle}>Franklin</Text>
         </View>
         <TouchableOpacity style={Style.kitchenStyle}>
@@ -48,8 +58,8 @@ const GetStarted = ({ navigation }) => {
               active === 'kitchen'
                 ? Kitchen
                 : active === 'palour'
-                  ? palor
-                  : Kitchen
+                ? palor
+                : Kitchen
             }
           />
           <Image source={grey} style={Style.greyStyle} />
@@ -112,7 +122,9 @@ const GetStarted = ({ navigation }) => {
             return (
               <TouchableOpacity
                 onPress={() => setActive(a.name)}
-                style={active === a.name ? Style.activeStyleIcon : Style.sideIcon}
+                style={
+                  active === a.name ? Style.activeStyleIcon : Style.sideIcon
+                }
                 key={i}>
                 <Image source={a.icon} />
               </TouchableOpacity>
