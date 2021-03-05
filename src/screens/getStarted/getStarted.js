@@ -11,6 +11,11 @@ import humid from '../../assets/humid.png';
 import sun from '../../assets/sun.png';
 import on from '../../assets/on.png';
 import bed from '../../assets/bed.png';
+import activeBed from '../../assets/activebed.png';
+import activechair from '../../assets/activechair.png';
+import activemicro from '../../assets/kitchenactive.png';
+import activebathtop from '../../assets/bathtopactive.png';
+import activealarm from '../../assets/alarmactive.png';
 import chair from '../../assets/chair.png';
 import bathtop from '../../assets/bathtop.png';
 import alarm from '../../assets/alarm.png';
@@ -18,11 +23,11 @@ import micro from '../../assets/micro.png';
 import palor from '../../assets/palor.png';
 import cross from '../../assets/cross.png';
 const tabArray = [
-  {icon: bed, name: 'room'},
-  {icon: chair, name: 'palour'},
-  {icon: micro, name: 'kitchen'},
-  {icon: bathtop, name: 'bathroom'},
-  {icon: alarm, name: 'alarm'},
+  {icon: bed, name: 'Room', activeIcon: activeBed},
+  {icon: chair, name: 'Palour', activeIcon: activechair},
+  {icon: micro, name: 'Kitchen', activeIcon: activemicro},
+  {icon: bathtop, name: 'Bathroom', activeIcon: activebathtop},
+  {icon: alarm, name: 'Alarm', activeIcon: activealarm},
 ];
 
 const GetStarted = ({navigation}) => {
@@ -124,7 +129,7 @@ const GetStarted = ({navigation}) => {
                   active === a.name ? Style.activeStyleIcon : Style.sideIcon
                 }
                 key={i}>
-                <Image source={a.icon} />
+                <Image source={active === a.name ? a.activeIcon : a.icon} />
               </TouchableOpacity>
             );
           })}
