@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, StatusBar, Image, ScrollView, SafeAreaView} from 'react-native';
 import Style from './taskStyle';
 import Bugger from '../../assets/bugger.png';
 import Bell from '../../assets/bell.png';
@@ -58,14 +58,16 @@ const switchArray = [
   },
 ];
 
-const Task = () => {
+const Task = ({navigation}) => {
   const [active, setActive] = useState('');
 
   return (
-    <View style={[Style.Container, Style.rowDirection]}>
+    <SafeAreaView style={[Style.Container, Style.rowDirection]}>
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <View style={Style.mainView}>
         <View style={[Style.rowDirection, Style.flexEnd]}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('GetStartedScreen')}>
             <Image source={Bugger} />
           </TouchableOpacity>
           <Text style={Style.Title}>Sweet home!</Text>
@@ -120,7 +122,7 @@ const Task = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

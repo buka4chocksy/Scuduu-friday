@@ -9,7 +9,9 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import MainNavigation from './src/navigation/index';
-const App: () => React$Node = () => {
+
+
+const App = () => {
   return (
     <>
       <NavigationContainer>

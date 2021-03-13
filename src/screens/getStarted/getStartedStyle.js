@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import { withSafeAreaInsets } from 'react-native-safe-area-context';
+import {Platform, StatusBar, StyleSheet} from 'react-native';
+import {withSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default StyleSheet.create({
   Container: {
@@ -7,11 +7,13 @@ export default StyleSheet.create({
     backgroundColor: '#ffff',
     paddingLeft: 20,
     paddingRight: 20,
+    // paddingTop: Platform.OS = "android" ? StatusBar.currentHeight : 0,
+    // alignItems: 'center'
   },
   mainView: {
     width: '75%',
     backgroundColor: 'white',
-    marginTop: 80,
+    marginTop: 20,
     paddingRight: 20,
     paddingLeft: 5,
   },
@@ -20,7 +22,7 @@ export default StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   sideViewWrapper: {
-    marginTop: 80,
+    marginTop: 20,
     paddingLeft: 45,
   },
   rowDirection: {
@@ -177,6 +179,6 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 15,
-    marginTop: 120
-  }
+    marginTop: 100,
+  },
 });

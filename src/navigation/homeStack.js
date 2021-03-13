@@ -7,9 +7,13 @@ const Home = Stack;
 function HomeStack() {
   return (
     <Home.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
+    headerMode="none"
+      // screenOptions={{
+      //   headerShown: true,
+      //   headerStyle: { backgroundColor: "#12b293" },
+      //   headerTitleStyle: { color: "black" },
+
+      // }}
       initialRouteName="GetStartedScreen">
       <Home.Screen name="GetStartedScreen" component={GetStartedScreen} />
       <Home.Screen name="TaskScreen" component={TaskScreen} />

@@ -2,24 +2,27 @@ import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   Container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#ffff',
     paddingLeft: 20,
     paddingRight: 20,
+    height: '100%'
   },
   mainView: {
     width: '75%',
     backgroundColor: 'white',
-    marginTop: 80,
+    marginTop: 20,
     paddingRight: 20,
     paddingLeft: 5,
+    height: '100%'
   },
   subView: {
     width: '75%',
+    height: '100%',
     backgroundColor: '#F5F5F5',
   },
   sideViewWrapper: {
-    marginTop: 80,
+    marginTop: 20,
     paddingLeft: 45,
   },
   rowDirection: {
@@ -174,11 +177,11 @@ export default StyleSheet.create({
     height: 60,
     width: 60,
     backgroundColor: '#12B293',
-    marginBottom: 30,
+    // marginBottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 15,
-    marginTop: 120,
+    marginTop: 100,
   },
   connectedWrapper: {
     marginTop: 80,

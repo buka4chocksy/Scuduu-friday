@@ -1,5 +1,12 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Platform,
+  StatusBar,
+} from 'react-native';
 import Style from './getStartedStyle';
 import Bugger from '../../assets/bugger.png';
 import Bell from '../../assets/bell.png';
@@ -22,6 +29,9 @@ import alarm from '../../assets/alarm.png';
 import micro from '../../assets/micro.png';
 import palor from '../../assets/palor.png';
 import cross from '../../assets/cross.png';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {AuthContext} from '../../components/context';
+import {useNavigation} from '@react-navigation/core';
 const tabArray = [
   {icon: bed, name: 'Room', activeIcon: activeBed},
   {icon: chair, name: 'Palour', activeIcon: activechair},
@@ -31,10 +41,15 @@ const tabArray = [
 ];
 
 const GetStarted = ({navigation}) => {
+  const {navigate} = useNavigation();
+
   const [active, setActive] = useState('');
   let todays = new Date().getHours();
+  const {authContext, loginState} = React.useContext(AuthContext);
+  const {signOut} = authContext;
   return (
-    <View style={[Style.Container, Style.rowDirection]}>
+    <SafeAreaView style={[Style.Container, Style.rowDirection]}>
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <View style={Style.mainView}>
         <View style={[Style.rowDirection, Style.flexEnd]}>
           <TouchableOpacity onPress={() => navigation.navigate('TaskScreen')}>
@@ -133,12 +148,17 @@ const GetStarted = ({navigation}) => {
               </TouchableOpacity>
             );
           })}
-          <TouchableOpacity style={Style.buttomButton}>
+          <TouchableOpacity
+            style={Style.buttomButton}
+            onPress={() => {
+              signOut();
+              navigate('SignInScreen');
+            }}>
             <Image source={cross} />
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
