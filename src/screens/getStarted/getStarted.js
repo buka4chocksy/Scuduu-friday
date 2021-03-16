@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, Image} from 'react-native';
 import Style from './getStartedStyle';
-import Bugger from '../../assets/bugger.png';
+//import Bugger from '../../assets/bugger.png';
 import Bell from '../../assets/bell.png';
 import Kitchen from '../../assets/kitchen.png';
 import grey from '../../assets/grey.png';
@@ -23,7 +23,8 @@ import micro from '../../assets/micro.png';
 import palor from '../../assets/palor.png';
 import cross from '../../assets/cross.png';
 import ButtomModal from '../../components/buttomModal/buttomModal';
-import SwipeModal from '../../components/swipeModal/swipeModal'
+import SwipeModal from '../../components/swipeModal/swipeModal';
+import Bugger from '../../components/handBugger';
 const tabArray = [
   {icon: bed, name: 'Room', activeIcon: activeBed, image: Kitchen},
   {icon: chair, name: 'Palour', activeIcon: activechair, image: Kitchen},
@@ -41,9 +42,7 @@ const GetStarted = ({navigation}) => {
     <View style={[Style.Container, Style.rowDirection]}>
       <View style={Style.mainView}>
         <View style={[Style.rowDirection, Style.flexEnd]}>
-          <TouchableOpacity onPress={() => navigation.navigate('TaskScreen')}>
-            <Image source={Bugger} />
-          </TouchableOpacity>
+          <Bugger route={navigation} />
           <Text style={Style.Title}>Sweet home!</Text>
         </View>
         <View style={Style.subTitle}>
@@ -128,8 +127,8 @@ const GetStarted = ({navigation}) => {
           {tabArray.map((a, i) => {
             return (
               <TouchableOpacity
-              onPress={() => setActive(a.name)}
-              style={
+                onPress={() => setActive(a.name)}
+                style={
                   active === a.name ? Style.activeStyleIcon : Style.sideIcon
                 }
                 key={i}>
@@ -149,9 +148,7 @@ const GetStarted = ({navigation}) => {
       {/* {showModal && (
         <ButtomModal setActive={setshowModal} activeState={showModal} />
       )} */}
-       {showModal && (
-      <SwipeModal setActive={setshowModal}/>
-      )}
+      {showModal && <SwipeModal setActive={setshowModal} />}
     </View>
   );
 };
