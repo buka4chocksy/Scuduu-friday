@@ -1,8 +1,9 @@
 import React from 'react';
-import {Stack} from './common'
+import {Drawer} from './common';
 import HomeStack from './homeStack';
+import DrawerStack from './drawStack'
 import {View, StatusBar, Platform} from 'react-native';
-const Root  = Stack;
+const Root = Drawer;
 function MainNavigator() {
   return (
     <>
@@ -10,6 +11,7 @@ function MainNavigator() {
         screenOptions={{
           headerShown: false,
         }}>
+        <Root.Screen name={'drawers'} component={DrawerStack} />
         <Root.Screen name={'Home'} component={HomeStack} />
       </Root.Navigator>
     </>
