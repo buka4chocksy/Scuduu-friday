@@ -1,4 +1,7 @@
 import React, {useState} from 'react';
+import {API_KEY} from '@env';
+
+const axios = require('axios').default;
 import logo from '../../assets/greenLogo.png';
 // import Logo from '../../assets/logo.js';
 // import google from '../../assets/google';
@@ -25,35 +28,154 @@ import {AuthContext} from '../../components/context';
 import Button from '../../components/button';
 import Google from '../../assets/google';
 import Facebook from '../../assets/facebook';
+import {ScrollView} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/core';
 
 const SignUpScreen = ({navigation}) => {
+  const {navigate} = useNavigation();
   const [data, setData] = React.useState({
-    username: '',
+    firstname: '',
+    lastname: '',
+    email: '',
+    phone: '',
     password: '',
-    check_textInputChange: false,
+    check_firstNameChange: false,
+    check_lastNameChange: false,
+    check_emailChange: false,
+    check_phoneChange: false,
+    check_passwordChange: false,
     secureTextEntry: true,
-    isValidUser: true,
+    isValidFirstName: true,
+    isValidLastName: true,
+    isValidPhone: true,
+    isValidEmail: true,
     isValidPassword: true,
   });
 
+  console.log('====================================');
+  console.log(data.firstname);
+  console.log('====================================');
+
   const {colors} = useTheme();
 
-  const signIn = React.useContext(AuthContext);
+  const {authContext, loginState} = React.useContext(AuthContext);
+  const {signUp} = authContext;
 
-  const textInputChange = (val) => {
+  const handleSignUp = async () => {
+    console.log('====================================');
+    console.log(data.firstname);
+    console.log('====================================');
+
+    const createdUser = await axios
+      .post('https://friday-apis.herokuapp.com/register?APIKey=' + API_KEY, {
+        first_name: data.firstname,
+        last_name: data.lastname,
+        email_address: data.email,
+        phone_number: data.phone,
+        password: data.password,
+      })
+      .catch((error) => console.log(error));
+
+    console.log('====================================');
+    console.log('created user:' + createdUser);
+    console.log(createdUser.status);
+    console.log(createdUser);
+    console.log('====================================');
+    const email = data.email
+    if (createdUser) {
+      console.log('====================================');
+      console.log('that is the gist');
+      console.log('====================================');
+      signUp(createdUser, email);
+      navigate('OneTimePass');
+    }else{
+      console.log('====================================');
+      console.log('NOT REGISTERED');
+      console.log('====================================');
+    }
+
+    if (
+      data.firstname.length == 0 ||
+      data.lastname.length == 0 ||
+      data.password.length == 0 ||
+      data.email.length == 0 ||
+      data.phone.length == 0
+    ) {
+      Alert.alert('Wrong Input!', 'Input fields cannot be empty.', [
+        {text: 'Okay'},
+      ]);
+      return;
+    }
+  };
+
+  const handleFirstNameChange = (val) => {
     if (val.trim().length >= 4) {
       setData({
         ...data,
-        username: val,
-        check_textInputChange: true,
-        isValidUser: true,
+        firstname: val,
+        check_firstNameChange: true,
+        isValidFirstName: true,
       });
     } else {
       setData({
         ...data,
-        username: val,
-        check_textInputChange: false,
-        isValidUser: false,
+        firstname: val,
+        check_firstNameChange: false,
+        isValidFirstName: false,
+      });
+    }
+  };
+
+  const handleLastNameChange = (val) => {
+    if (val.trim().length >= 4) {
+      setData({
+        ...data,
+        lastname: val,
+        check_lastNameChange: true,
+        isValidLastName: true,
+      });
+    } else {
+      setData({
+        ...data,
+        lastname: val,
+        check_lastNameChange: false,
+        isValidLastName: false,
+      });
+    }
+  };
+
+  const handleEmailChange = (val) => {
+    if (val.trim().length >= 4) {
+      setData({
+        ...data,
+        email: val,
+        check_emailChange: true,
+        isValidEmail: true,
+      });
+    } else {
+      setData({
+        ...data,
+        email: val,
+        check_emailChange: false,
+        isValidEmail: false,
+      });
+    }
+  };
+
+  const handlePhoneChange = (val) => {
+    if (val.trim().length >= 4) {
+      setData({
+        ...data,
+        phone: val,
+        check_phoneChange: true,
+        isValidPhone: true,
+      });
+    } else {
+      setData({
+        ...data,
+        phone: val,
+        check_phoneChange: false,
+        isValidPhone: false,
       });
     }
   };
@@ -81,156 +203,233 @@ const SignUpScreen = ({navigation}) => {
     });
   };
 
-  const handleValidUser = (val) => {
-    if (val.trim().length >= 4) {
-      setData({
-        ...data,
-        isValidUser: true,
-      });
-    } else {
-      setData({
-        ...data,
-        isValidUser: false,
-      });
-    }
-  };
-
-  const handleSignUp = (userName, password) => {
-    const foundUser = Users.filter((item) => {
-      return userName == item.username && password == item.password;
-    });
-
-    if (data.username.length == 0 || data.password.length == 0) {
-      Alert.alert(
-        'Wrong Input!',
-        'Username or password field cannot be empty.',
-        [{text: 'Okay'}],
-      );
-      return;
-    }
-
-    if (foundUser.length == 0) {
-      Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-        {text: 'Okay'},
-      ]);
-      return;
-    }
-    signIn(foundUser);
-  };
-
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-      <View style={styles.header}>
-        <Logo />
-        {/* <Image source={logo} /> */}
-        <Text style={styles.text_header}>Sign up with</Text>
-        <View style={styles.socila_header}>
-          <Google />
-          <Facebook />
-        </View>
-        <Text style={styles.text_header}>Or</Text>
-      </View>
-      <Animatable.View animation="fadeInUpBig" style={[styles.footer]}>
-        <View style={styles.input_footer}>
-          <Text style={[styles.text_footer]}>
-            Email
-            {/* <FontAwesome  name='user-o' color='red' size={30} /> */}
-          </Text>
-          <View style={styles.action}>
-            <Feather name="mail" color={'rgba(17, 17, 17, 0.25)'} size={20} />
-            <TextInput
-              style={[
-                styles.textInput,
-                {
-                  color: 'rgba(17, 17, 17, 0.25)',
-                },
-              ]}
-              autoCapitalize="none"
-              onChangeText={(val) => textInputChange(val)}
-              onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
-            />
-            {data.check_textInputChange ? (
-              <Animatable.View animation="bounceIn">
-                {/* <FontAwesome style={{fontFamily: 'FontAwesome', fontSize: 20, color: 'green'}}>{Icons.exclamationTriangle}</FontAwesome> */}
-                <Text>
-                  <Feather name="check-circle" color="#12B293" size={20} />
-                </Text>
-              </Animatable.View>
-            ) : null}
+      <ScrollView>
+        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+        <View style={styles.header}>
+          <Logo />
+          <Text style={styles.text_header}>Sign up with</Text>
+          <View style={styles.socila_header}>
+            <Google />
+            <Facebook />
           </View>
+          <Text style={styles.text_header}>Or</Text>
         </View>
-        {data.isValidUser ? null : (
-          <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>
-              Username must be 4 characters long.
+
+        <Animatable.View animation="fadeInUpBig" style={[styles.footer]}>
+          <View style={styles.input_footer}>
+            <Text style={[styles.text_footer]}>Firstname</Text>
+            <View style={styles.action}>
+              <Feather name="user" color={'rgba(17, 17, 17, 0.25)'} size={20} />
+
+              <TextInput
+                style={[
+                  styles.textInput,
+                  {
+                    color: 'rgba(17, 17, 17, 0.25)',
+                  },
+                ]}
+                autoCapitalize="none"
+                onChangeText={(val) => handleFirstNameChange(val)}
+                // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+              />
+
+              {data.check_firstNameChange ? (
+                <Animatable.View animation="bounceIn">
+                  <Text>
+                    <Feather name="check-circle" color="#12B293" size={20} />
+                  </Text>
+                </Animatable.View>
+              ) : null}
+            </View>
+          </View>
+
+          {data.isValidFirstName ? null : (
+            <Animatable.View animation="fadeInLeft" duration={500}>
+              <Text style={styles.errorMsg}>
+                Firstname must be 4 characters long.
+              </Text>
+            </Animatable.View>
+          )}
+          <View style={styles.input_footer}>
+            <Text style={[styles.text_footer]}>
+              Lastname
+              {/* <FontAwesome  name='user-o' color='red' size={30} /> */}
             </Text>
-          </Animatable.View>
-        )}
-        <View style={styles.input_footer}>
-          <Text
-            style={[
-              styles.text_footer,
-              // {
-              //   // marginTop: 35,
-              // },
-            ]}>
-            Password
-          </Text>
-          <View style={styles.action}>
-            <Feather name="lock" color={'rgba(17, 17, 17, 0.25)'} size={20} />
-            <TextInput
-              secureTextEntry={data.secureTextEntry ? true : false}
+            <View style={styles.action}>
+              <Feather name="user" color={'rgba(17, 17, 17, 0.25)'} size={20} />
+              <TextInput
+                style={[
+                  styles.textInput,
+                  {
+                    color: 'rgba(17, 17, 17, 0.25)',
+                  },
+                ]}
+                autoCapitalize="none"
+                onChangeText={(val) => handleLastNameChange(val)}
+                // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+              />
+              {data.check_lastNameChange ? (
+                <Animatable.View animation="bounceIn">
+                  {/* <FontAwesome style={{fontFamily: 'FontAwesome', fontSize: 20, color: 'green'}}>{Icons.exclamationTriangle}</FontAwesome> */}
+                  <Text>
+                    <Feather name="check-circle" color="#12B293" size={20} />
+                  </Text>
+                </Animatable.View>
+              ) : null}
+            </View>
+          </View>
+
+          {data.isValidLastName ? null : (
+            <Animatable.View animation="fadeInLeft" duration={500}>
+              <Text style={styles.errorMsg}>
+                Lastname must be 4 characters long.
+              </Text>
+            </Animatable.View>
+          )}
+          <View style={styles.input_footer}>
+            <Text style={[styles.text_footer]}>
+              Email
+              {/* <FontAwesome  name='user-o' color='red' size={30} /> */}
+            </Text>
+            <View style={styles.action}>
+              <Feather name="mail" color={'rgba(17, 17, 17, 0.25)'} size={20} />
+              <TextInput
+                style={[
+                  styles.textInput,
+                  {
+                    color: 'rgba(17, 17, 17, 0.25)',
+                  },
+                ]}
+                autoCapitalize="none"
+                textContentType="emailAddress"
+                onChangeText={(val) => handleEmailChange(val)}
+                // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+              />
+              {data.check_emailChange ? (
+                <Animatable.View animation="bounceIn">
+                  {/* <FontAwesome style={{fontFamily: 'FontAwesome', fontSize: 20, color: 'green'}}>{Icons.exclamationTriangle}</FontAwesome> */}
+                  <Text>
+                    <Feather name="check-circle" color="#12B293" size={20} />
+                  </Text>
+                </Animatable.View>
+              ) : null}
+            </View>
+          </View>
+
+          {data.isValidEmail ? null : (
+            <Animatable.View animation="fadeInLeft" duration={500}>
+              <Text style={styles.errorMsg}>must be a valid email</Text>
+            </Animatable.View>
+          )}
+          <View style={styles.input_footer}>
+            <Text style={[styles.text_footer]}>
+              Phone
+              {/* <FontAwesome  name='user-o' color='red' size={30} /> */}
+            </Text>
+            <View style={styles.action}>
+              <Feather
+                name="phone"
+                color={'rgba(17, 17, 17, 0.25)'}
+                size={20}
+              />
+              <TextInput
+                style={[
+                  styles.textInput,
+                  {
+                    color: 'rgba(17, 17, 17, 0.25)',
+                  },
+                ]}
+                autoCapitalize="none"
+                textContentType="telephoneNumber"
+                onChangeText={(val) => handlePhoneChange(val)}
+                // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+              />
+              {data.check_phoneChange ? (
+                <Animatable.View animation="bounceIn">
+                  {/* <FontAwesome style={{fontFamily: 'FontAwesome', fontSize: 20, color: 'green'}}>{Icons.exclamationTriangle}</FontAwesome> */}
+                  <Text>
+                    <Feather name="check-circle" color="#12B293" size={20} />
+                  </Text>
+                </Animatable.View>
+              ) : null}
+            </View>
+          </View>
+
+          {data.isValidPhone ? null : (
+            <Animatable.View animation="fadeInLeft" duration={500}>
+              <Text style={styles.errorMsg}>
+                Phone number must a valid phone number.
+              </Text>
+            </Animatable.View>
+          )}
+          <View style={styles.input_footer}>
+            <Text
               style={[
-                styles.textInput,
-                {
-                  color: 'rgba(17, 17, 17, 0.25)',
-                },
-              ]}
-              autoCapitalize="none"
-              onChangeText={(val) => handlePasswordChange(val)}
-            />
-            <TouchableOpacity onPress={updateSecureTextEntry}>
-              {data.secureTextEntry ? (
-                <Feather
-                  name="eye-off"
-                  color={'rgba(17, 17, 17, 0.25)'}
-                  size={20}
-                />
-              ) : (
-                <Feather
-                  name="eye-on"
-                  color={'rgba(17, 17, 17, 0.25)'}
-                  size={20}
-                />
-              )}
+                styles.text_footer,
+                // {
+                //   // marginTop: 35,
+                // },
+              ]}>
+              Password
+            </Text>
+            <View style={styles.action}>
+              <Feather name="lock" color={'rgba(17, 17, 17, 0.25)'} size={20} />
+              <TextInput
+                secureTextEntry={data.secureTextEntry ? true : false}
+                style={[
+                  styles.textInput,
+                  {
+                    color: 'rgba(17, 17, 17, 0.25)',
+                  },
+                ]}
+                autoCapitalize="none"
+                textContentType="newPassword"
+                onChangeText={(val) => handlePasswordChange(val)}
+              />
+              <TouchableOpacity onPress={updateSecureTextEntry}>
+                {data.secureTextEntry ? (
+                  <Feather
+                    name="eye-off"
+                    color={'rgba(17, 17, 17, 0.25)'}
+                    size={20}
+                  />
+                ) : (
+                  <Feather
+                    name="eye"
+                    color={'rgba(17, 17, 17, 0.25)'}
+                    size={20}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+          {data.isValidPassword ? null : (
+            <Animatable.View animation="fadeInLeft" duration={500}>
+              <Text style={styles.errorMsg}>
+                Password must be 8 characters long.
+              </Text>
+            </Animatable.View>
+          )}
+
+          <Button
+            text="Continue"
+            action={() => {
+              handleSignUp();
+            }}
+          />
+          <View style={styles.alreadyMember}>
+            <Text>Existing User?</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('SignInScreen');
+              }}>
+              <Text style={{color: '#12B293', marginLeft: 10}}>Login</Text>
             </TouchableOpacity>
           </View>
-        </View>
-        {data.isValidPassword ? null : (
-          <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>
-              Password must be 8 characters long.
-            </Text>
-          </Animatable.View>
-        )}
-
-        <Button
-          text="Continue"
-          action={() => {
-            handleSignUp(data.username, data.password);
-          }}
-        />
-        <View style={styles.alreadyMember}>
-          <Text>Existing User?</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('SignInScreen');
-            }}>
-            <Text style={{color: '#12B293', marginLeft: 10}}>Login</Text>
-          </TouchableOpacity>
-        </View>
-      </Animatable.View>
+        </Animatable.View>
+      </ScrollView>
     </View>
   );
 };
@@ -239,30 +438,33 @@ export default SignUpScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    height: '100%',
+    // flex: 1,
+    // height: '100%',
     backgroundColor: '#FFF',
   },
   header: {
     flex: 1,
-    height: '50%',
+    // height: '25%',
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
     // paddingBottom: 50,
     alignItems: 'center',
+    paddingTop: 70,
   },
   footer: {
     // flex: 1,
     backgroundColor: 'pink',
-    height: '50%',
+    // height: '60%',
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: 20,
     // paddingVertical: 30,
+    paddingBottom: 40,
   },
   forgotP: {
     alignItems: 'flex-end',
+    margin: 20,
   },
   text_header: {
     color: '#555555',
@@ -284,7 +486,7 @@ const styles = StyleSheet.create({
     color: 'rgba(17, 17, 17, 0.25)',
     fontSize: 12,
     fontFamily: 'Montserrat',
-    paddingTop: 10,
+    paddingTop: 20,
   },
   input_footer: {
     backgroundColor: '#F0F0F0',
@@ -292,6 +494,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingRight: 20,
     paddingLeft: 20,
+    height: 85,
   },
   action: {
     flexDirection: 'row',
@@ -340,6 +543,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    // marginBottom:
+    marginTop: 40,
+    marginBottom: 20,
   },
 });

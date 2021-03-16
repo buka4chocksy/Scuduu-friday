@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Logo from '../../assets/logo.js';
 import {API_KEY} from '@env';
 
@@ -23,123 +23,101 @@ import {AuthContext} from '../../components/context';
 import Button from '../../components/button';
 import Users from '../../../model/users';
 import {useNavigation} from '@react-navigation/core';
+import AsyncStorage from '@react-native-community/async-storage';
 
-const SignInScreen = ({navigation}) => {
+const OneTimePass = () => {
+
+
   const {navigate} = useNavigation();
 
   const [data, setData] = React.useState({
-    email: '',
-    password: '',
-    check_textInputChange: false,
-    secureTextEntry: true,
-    isValidEmail: true,
-    isValidPassword: true,
+    email: null,
+    userToken: null,
+    check_OTPInputChange: false,
+    isValidOTP: true,
   });
 
-  const {colors} = useTheme();
+
+console.log('====================================');
+console.log("hello from OTP");
+console.log('====================================');
+
+
+React.useEffect(()=>{
+
+  const email = AsyncStorage.getItem('email');
+
+  email.then((value)=>{
+
+
+    console.log('====================================');
+    console.log(value);
+    console.log('====================================');
+
+
+        setData({
+      ...data,
+      email: value,
+    });
+  });
+}, [])
 
   const {authContext, loginState} = React.useContext(AuthContext);
-  const {signIn} = authContext;
-  const textInputChange = (val) => {
+  const {verify} = authContext;
+
+  const OTPInputChange = (val) => {
     if (val.trim().length >= 4) {
       setData({
         ...data,
-        email: val,
-        check_textInputChange: true,
-        isValidEmail: true,
+        userToken: val,
+        check_OTPInputChange: true,
+        isValidOTP: true,
       });
     } else {
       setData({
         ...data,
-        email: val,
-        check_textInputChange: false,
-        isValidEmail: false,
+        userToken: val,
+        check_OTPInputChange: false,
+        isValidOTP: false,
       });
     }
   };
 
-  const handlePasswordChange = (val) => {
-    if (val.trim().length >= 6) {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: true,
-      });
-    } else {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: false,
-      });
-    }
-  };
-
-  const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
-  };
-
-  const handleValidUser = (val) => {
+  const handleValidOTP = (val) => {
     if (val.trim().length >= 4) {
       setData({
         ...data,
-        isValidEmail: true,
+        isValidUser: true,
       });
     } else {
       setData({
         ...data,
-        isValidEmail: false,
+        isValidUser: false,
       });
     }
   };
-  const handleSignIn = async (email, password) => {
+  const handleVerification = async (email_address, auth_token) => {
     console.log('====================================');
-    console.log(data.firstname);
+    console.log(data.email);
     console.log('====================================');
-
-    const foundUser = await axios
-      .post('https://friday-apis.herokuapp.com/login?APIKey=' + API_KEY, {
-        email: data.email,
-        password: data.password,
+    const verifiedUser = await axios
+      .post('https://friday-apis.herokuapp.com/verify?APIKey=' + API_KEY, {
+        email_address: data.email,
+        auth_token: data.userToken,
       })
       .catch((error) => console.log(error));
 
+    console.log('====================================');
+    console.log(verifiedUser);
+    console.log('====================================');
 
-    console.log(foundUser);    
-    // const foundUser = Users.filter((item) => {
-    //   return email == item.email && password == item.password;
-    // });
-
-    if (data.email.length == 0 || data.password.length == 0) {
-      Alert.alert(
-        'Wrong Input!',
-        'email or password field cannot be empty.',
-        [{text: 'Okay'}],
-      );
-      return;
-    }
-
-    if (foundUser.data.user_details.user_token == 0) {
-      Alert.alert('Invalid User!', 'email or password is incorrect.', [
-        {text: 'Okay'},
-      ]);
-      return;
-    }
-
-    if (foundUser.data.user_details.user_token) {
-      signIn(foundUser);
+    if (verifiedUser) {
+      verify(verifiedUser);
       navigate('HomeScreen');
     } else {
       console.log('Thief');
     }
-    console.log('ssssss', foundUser);
   };
-
-  // const handleLogin = (email, password) => {
-  //   signIn(email, password);
-  // };
 
   return (
     <View style={styles.container}>
@@ -147,11 +125,11 @@ const SignInScreen = ({navigation}) => {
       <View style={styles.header}>
         <Logo />
         {/* <Image source={logo} /> */}
-        <Text style={styles.text_header}>Sign in to continue</Text>
+        <Text style={styles.text_header}>Verify the OTP sent to your mail</Text>
       </View>
       <Animatable.View animation="fadeInUpBig" style={[styles.footer]}>
         <View style={styles.input_footer}>
-          <Text style={[styles.text_footer]}>Email</Text>
+          <Text style={[styles.text_footer]}>O T P</Text>
           {/* <FontAwesome  name='user-o' color='red' size={30} /> */}
           <View style={styles.action}>
             <Feather name="mail" color={'rgba(17, 17, 17, 0.25)'} size={20} />
@@ -163,81 +141,37 @@ const SignInScreen = ({navigation}) => {
                 },
               ]}
               autoCapitalize="none"
-              onChangeText={(val) => textInputChange(val)}
-              onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+              onChangeText={(val) => OTPInputChange(val)}
+              onEndEditing={(e) => handleValidOTP(e.nativeEvent.text)}
             />
             {data.check_textInputChange ? (
               <Animatable.View animation="bounceIn">
-                {/* <FontAwesome style={{fontFamily: 'FontAwesome', fontSize: 20, color: 'green'}}>{Icons.exclamationTriangle}</FontAwesome> */}
                 <Feather name="check-circle" color="#12B293" size={20} />
               </Animatable.View>
             ) : null}
           </View>
         </View>
-        {data.isValidEmail ? null : (
+        {data.isValidOTP ? null : (
           <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>
-              email must be 4 characters long.
-            </Text>
-          </Animatable.View>
-        )}
-        <View style={styles.input_footer}>
-          <Text
-            style={[
-              styles.text_footer,
-              // {
-              //   // marginTop: 35,
-              // },
-            ]}>
-            Password
-          </Text>
-          <View style={styles.action}>
-            <Feather name="lock" color={'rgba(17, 17, 17, 0.25)'} size={20} />
-            <TextInput
-              secureTextEntry={data.secureTextEntry ? true : false}
-              style={[
-                styles.textInput,
-                {
-                  color: 'rgba(17, 17, 17, 0.25)',
-                },
-              ]}
-              autoCapitalize="none"
-              onChangeText={(val) => handlePasswordChange(val)}
-            />
-            <TouchableOpacity onPress={updateSecureTextEntry}>
-              {data.secureTextEntry ? (
-                <Feather
-                  name="eye-off"
-                  color={'rgba(17, 17, 17, 0.25)'}
-                  size={20}
-                />
-              ) : (
-                <Feather
-                  name="eye"
-                  color={'rgba(17, 17, 17, 0.25)'}
-                  size={20}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-        {data.isValidPassword ? null : (
-          <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>
-              Password must be 6 characters long.
-            </Text>
+            <Text style={styles.errorMsg}>OTP must be 4 characters long.</Text>
           </Animatable.View>
         )}
 
         <TouchableOpacity style={styles.forgotP}>
           <Text style={{color: '#555555', marginTop: 15}}>
-            Forgot password?
+            Didn't receive any OTP?
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('SignUpScreen');
+              }}>
+              <Text style={{color: '#12B293', marginLeft: 10}}>Resend</Text>
+            </TouchableOpacity>
           </Text>
         </TouchableOpacity>
         <Button
-          text="Continue"
+          text="Verify"
           action={() => {
-            handleSignIn(data.email, data.password);
+            handleVerification(data.email, data.userToken);
           }}
         />
         <View style={styles.alreadyMember}>
@@ -254,7 +188,7 @@ const SignInScreen = ({navigation}) => {
   );
 };
 
-export default SignInScreen;
+export default OneTimePass;
 
 const styles = StyleSheet.create({
   container: {
@@ -282,8 +216,7 @@ const styles = StyleSheet.create({
   },
   forgotP: {
     alignItems: 'flex-end',
-    margin: 20
-
+    margin: 20,
   },
   text_header: {
     color: '#555555',
@@ -305,7 +238,7 @@ const styles = StyleSheet.create({
     color: 'rgba(17, 17, 17, 0.25)',
     fontSize: 12,
     fontFamily: 'Montserrat',
-    paddingTop: 15,
+    paddingTop: 10,
   },
   input_footer: {
     backgroundColor: '#F0F0F0',
@@ -313,7 +246,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingRight: 20,
     paddingLeft: 20,
-    height: 85
+    height: 85,
   },
   action: {
     flexDirection: 'row',
@@ -365,3 +298,19 @@ const styles = StyleSheet.create({
     // marginBottom:
   },
 });
+
+
+  // React.useEffect(async () => {
+  //   const newEmail = await AsyncStorage.getItem('email');
+
+  //   console.log('====================================');
+  //   console.log('email saved is: ' + newEmail);
+  //   console.log('====================================');
+
+  //   setData({
+  //     ...data,
+  //     email: newEmail,
+  //   });
+  // }, []);
+
+  // const {colors} = useTheme();

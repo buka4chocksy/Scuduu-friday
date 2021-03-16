@@ -6,15 +6,14 @@ import SplashScreen from '../screens/onBoarding/splashScreen';
 import onBoardingScreen from '../screens/onBoarding/onBoardingScreen';
 import SignInScreen from '../screens/authentication/signInScreen';
 import SignUpScreen from '../screens/authentication/signUpScreen';
+import OneTimePass from '../screens/authentication/oneTimePass';
 import {ActivityIndicator, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation, useNavigationBuilder} from '@react-navigation/core';
 
 const Root = Stack;
 
-
 function MainNavigator() {
-
   const globlaScreenOptions = {
     headerShown: false,
   };
@@ -24,10 +23,15 @@ function MainNavigator() {
 
   const initialLoginState = {
     isLoading: true,
-    userName: null,
+    email: null,
     userToken: null,
+    email: null,
     firstTimeLogin: true,
   };
+
+  console.log('====================================');
+  console.log('initial user token: ' + initialLoginState.userToken);
+  console.log('====================================');
 
   const loginReducer = (prevState, action) => {
     switch (action.type) {
@@ -41,7 +45,15 @@ function MainNavigator() {
       case 'LOGIN':
         return {
           ...prevState,
-          userName: action.id,
+          email: action.email,
+          userToken: action.token,
+          isLoading: false,
+          firstTimeLogin: false,
+        };
+      case 'VERIFY':
+        return {
+          ...prevState,
+          email: action.email,
           userToken: action.token,
           isLoading: false,
           firstTimeLogin: false,
@@ -49,7 +61,7 @@ function MainNavigator() {
       case 'LOGOUT':
         return {
           ...prevState,
-          userName: null,
+          email: null,
           userToken: null,
           isLoading: false,
           firstTimeLogin: false,
@@ -57,8 +69,8 @@ function MainNavigator() {
       case 'REGISTER':
         return {
           ...prevState,
-          userName: action.id,
-          userToken: action.token,
+          email: action.email,
+          // userToken: action.token,
           isLoading: false,
           firstTimeLogin: false,
         };
@@ -67,47 +79,59 @@ function MainNavigator() {
 
   const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);
 
-  if (loginState.userToken) {
-    console.log('token exist');
-  } else {
-    console.log("token doesn't");
-  }
   const authContext = useMemo(
     () => ({
-      reOpen: async () => {
+      signUp: async (createdUser, email) => {
+        // setUserToken(null);
+        // setIsLoading(false);
+        const newEmail = email;
+        console.log('====================================');
+        console.log('the new email is :');
+        console.log('====================================');
+
         try {
-          const token = await AsyncStorage.getItem('userToken');
-          return token;
+          await AsyncStorage.setItem('email', newEmail);
+          console.log('user email inside setItem: ', newEmail);
         } catch (e) {
           console.log(e);
         }
-        return null;
+        dispatch({type: 'REGISTER', email: newEmail});
       },
-      signUp: () => {
-        setUserToken(null);
-        setIsLoading(false);
+
+      verify: async (verifiedUser) => {
+        const newUserToken = String(verifiedUser[0].user_token);
+        const newEmail = verifiedUser[0].email;
+        // setUserToken(null);
+        // setIsLoading(false);
+        try {
+          await AsyncStorage.setItem('email', email);
+          console.log('user email inside setItem: ', email);
+        } catch (e) {
+          console.log(e);
+        }
+        dispatch({type: 'VERIFY', email: newEmail, token: newUserToken});
       },
 
       signIn: async (foundUser) => {
         // setUserToken('abc');
         // setIsLoading(false);
-        userToken = String(foundUser[0].userToken);
-        const userName = foundUser[0].username;
+        const newUserToken = String(foundUser.data.user_details.user_token);
+        const newEmail = foundUser.data.user_details.email;
 
         try {
-          await AsyncStorage.setItem('userToken', userToken);
-          console.log('user token inside setItem: ', userToken);
+          await AsyncStorage.setItem('userToken', newUserToken);
+          console.log('user token inside setItem: ', newUserToken);
         } catch (e) {
           console.log(e);
         }
 
         // console.log('user token: ', userToken);
-        dispatch({type: 'LOGIN', id: userName, token: userToken});
+        dispatch({type: 'LOGIN', email: newEmail, userToken: newUserToken});
       },
       signOut: async () => {
         // setUserToken(null);
         // setIsLoading(false);
-        console.log('sssss', loginState.userToken);
+        console.log(loginState.userToken);
         try {
           await AsyncStorage.removeItem('userToken');
         } catch (e) {
@@ -131,7 +155,7 @@ function MainNavigator() {
       }
       // console.log('user token outside get: ', userToken);
       dispatch({type: 'RETRIEVE_TOKEN', token: userToken});
-      navigate('HomeScreen')
+      navigate('HomeScreen');
 
       // setIsLoading(false);
     };
@@ -141,15 +165,9 @@ function MainNavigator() {
     <AuthContext.Provider value={{authContext, loginState}}>
       <Root.Navigator screenOptions={globlaScreenOptions}>
         <Root.Screen name={'SplashScreen'} component={SplashScreen} />
+        <Root.Screen name={'OneTimePass'} component={OneTimePass} />
         <Root.Screen name={'HomeScreen'} component={HomeStack} />
-
-        {console.log('heyyyyy', loginState.userToken)}
-        {console.log('hey', loginState.userToken)}
         <Root.Screen name={'OnBoardingScreen'} component={onBoardingScreen} />
-
-        {console.log('heyyyyy', loginState.userToken)}
-        {console.log('hey', loginState.userToken)}
-
         <Root.Screen name={'SignInScreen'} component={SignInScreen} />
         <Root.Screen name={'SignUpScreen'} component={SignUpScreen} />
       </Root.Navigator>

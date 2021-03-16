@@ -152,7 +152,9 @@ const GetStarted = ({navigation}) => {
             style={Style.buttomButton}
             onPress={() => {
               signOut();
+              if(signOut){
               navigate('SignInScreen');
+              }
             }}>
             <Image source={cross} />
           </TouchableOpacity>

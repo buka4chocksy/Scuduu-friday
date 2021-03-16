@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/core';
 import React from 'react';
 import {View, StyleSheet, Image, StatusBar} from 'react-native';
@@ -8,26 +9,21 @@ const brandColor = '#12B293';
 
 const SplashScreen = () => {
   const {navigate, reset} = useNavigation();
-  const {authContext, loginState} = React.useContext(AuthContext);
-  // const {token} = loginState;
+
   React.useEffect(() => {
-    authContext
-      .reOpen()
-      .then((token) => {
-          console.log('from splash', token);
-          if(token){
-            navigate("HomeScreen")
-          }else{
-            navigate("SignInScreen")
-          }
+    const getTOken = async () => {
+      const value = await AsyncStorage.getItem('userToken');
 
-      })
-      .catch();
+      if (value) {
+        navigate('HomeScreen');
+      } else {
+        navigate('SignInScreen');
+      }
+    };
 
-      // navigate('OnBoardingScreen');
-
-
+    getTOken();
   }, []);
+
   return (
     <View style={styles.body}>
       <StatusBar hidden={false} backgroundColor={brandColor} />
