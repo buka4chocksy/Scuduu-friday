@@ -60,6 +60,7 @@ const switchArray = [
 
 const Task = ({navigation}) => {
   const [active, setActive] = useState('');
+  const [customclick, Setcustomclick] = useState(false);
 
   return (
     <SafeAreaView style={[Style.Container, Style.rowDirection]}>
@@ -83,7 +84,11 @@ const Task = ({navigation}) => {
               <Text style={Style.deviceSubtext2}>Master Switch</Text>
             </View>
             <View>
-              <TouchableOpacity style={Style.switchStyle}>
+              <TouchableOpacity
+                onPress={() => Setcustomclick(!customclick)}
+                style={
+                  customclick ? Style.switchActiveStyle : Style.switchStyle
+                }>
                 <Image source={switchLogo} />
               </TouchableOpacity>
             </View>

@@ -32,18 +32,22 @@ import cross from '../../assets/cross.png';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from '../../components/context';
 import {useNavigation} from '@react-navigation/core';
+import ButtomModal from '../../components/buttomModal/buttomModal';
+import SwipeModal from '../../components/swipeModal/swipeModal'
 const tabArray = [
-  {icon: bed, name: 'Room', activeIcon: activeBed},
-  {icon: chair, name: 'Palour', activeIcon: activechair},
-  {icon: micro, name: 'Kitchen', activeIcon: activemicro},
-  {icon: bathtop, name: 'Bathroom', activeIcon: activebathtop},
-  {icon: alarm, name: 'Alarm', activeIcon: activealarm},
+  {icon: bed, name: 'Room', activeIcon: activeBed, image: Kitchen},
+  {icon: chair, name: 'Palour', activeIcon: activechair, image: Kitchen},
+  {icon: micro, name: 'Kitchen', activeIcon: activemicro, image: Kitchen},
+  {icon: bathtop, name: 'Bathroom', activeIcon: activebathtop, image: Kitchen},
+  {icon: alarm, name: 'Alarm', activeIcon: activealarm, image: Kitchen},
 ];
 
 const GetStarted = ({navigation}) => {
   const {navigate} = useNavigation();
 
   const [active, setActive] = useState('');
+  const [activeImage, setActiveImage] = useState('');
+  const [showModal, setshowModal] = useState(false);
   let todays = new Date().getHours();
   const {authContext, loginState} = React.useContext(AuthContext);
   const {signOut} = authContext;
@@ -75,7 +79,7 @@ const GetStarted = ({navigation}) => {
             source={
               active === 'kitchen'
                 ? Kitchen
-                : active === 'palour'
+                : active === 'Palour'
                 ? palor
                 : Kitchen
             }
@@ -139,8 +143,8 @@ const GetStarted = ({navigation}) => {
           {tabArray.map((a, i) => {
             return (
               <TouchableOpacity
-                onPress={() => setActive(a.name)}
-                style={
+              onPress={() => setActive(a.name)}
+              style={
                   active === a.name ? Style.activeStyleIcon : Style.sideIcon
                 }
                 key={i}>
@@ -148,18 +152,21 @@ const GetStarted = ({navigation}) => {
               </TouchableOpacity>
             );
           })}
-          <TouchableOpacity
-            style={Style.buttomButton}
-            onPress={() => {
-              signOut();
-              if(signOut){
-              navigate('SignInScreen');
-              }
-            }}>
-            <Image source={cross} />
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              onPress={() => setshowModal(!showModal)}
+              style={Style.buttomButton}>
+              <Image source={cross} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
+            {/* {showModal && (
+        <ButtomModal setActive={setshowModal} activeState={showModal} />
+      )} */}
+       {showModal && (
+      <SwipeModal setActive={setshowModal}/>
+      )}
     </SafeAreaView>
   );
 };
