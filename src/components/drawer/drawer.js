@@ -14,6 +14,7 @@ import water from '../../assets/water.png';
 import logoff from '../../assets/logoff.png';
 import reboot from '../../assets/reboot.png';
 import login from '../../assets/login.png';
+import barline from '../../assets/barline.png';
 
 const Drawer = ({navigation}) => {
   const textArray = [
@@ -59,7 +60,9 @@ const Drawer = ({navigation}) => {
         <Image source={water} />
         <Text style={Style.watertext}>Get Water Now</Text>
       </TouchableOpacity>
-      <View style={Style.borderline} />
+      <View style={Style.borderline}>
+        <Image source={barline} />
+      </View>
       <View style={Style.ButtomWrapper}>
         {buttomArray.map((a, i) => {
           return (
