@@ -19,7 +19,7 @@ import barline from '../../assets/barline.png';
 const Drawer = ({navigation}) => {
   const textArray = [
     {name: 'Profile', logo: icon, Screenname: 'TaskScreen'},
-    {name: 'Home', logo: home},
+    {name: 'Home', logo: home, Screenname: 'GetStartedScreen'},
     {name: 'Notification', logo: noti},
     {name: 'Settings', logo: chain},
     {name: 'Theme', logo: theme},
