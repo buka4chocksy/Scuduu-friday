@@ -56,8 +56,6 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   borderline: {
-    borderColor: 'grey',
-    borderWidth: 1,
     width: '80%',
     marginLeft: 20,
     marginTop: 20,
