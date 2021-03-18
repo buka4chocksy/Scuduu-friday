@@ -117,9 +117,11 @@ function MainNavigator() {
         // setIsLoading(false);
         const newUserToken = String(foundUser.data.user_details.user_token);
         const newEmail = foundUser.data.user_details.email;
+        const newUser = JSON.stringify(foundUser);
 
         try {
           await AsyncStorage.setItem('userToken', newUserToken);
+          await AsyncStorage.setItem('newUser', newUser);
           console.log('user token inside setItem: ', newUserToken);
         } catch (e) {
           console.log(e);
@@ -134,6 +136,7 @@ function MainNavigator() {
         console.log(loginState.userToken);
         try {
           await AsyncStorage.removeItem('userToken');
+          await AsyncStorage.removeItem('newUser');
         } catch (e) {
           console.log(e);
         }

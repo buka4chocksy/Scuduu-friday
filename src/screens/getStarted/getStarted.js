@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -20,37 +20,50 @@ import on from '../../assets/on.png';
 import bed from '../../assets/bed.png';
 import activeBed from '../../assets/activebed.png';
 import activechair from '../../assets/activechair.png';
-import activemicro from '../../assets/kitchenactive.png';
+import activeKitchenIcon from '../../assets/kitchenactive.png';
 import activebathtop from '../../assets/bathtopactive.png';
 import activealarm from '../../assets/alarmactive.png';
 import chair from '../../assets/chair.png';
 import bathtop from '../../assets/bathtop.png';
 import alarm from '../../assets/alarm.png';
-import micro from '../../assets/micro.png';
+import kitchenIcon from '../../assets/micro.png';
 import palor from '../../assets/palor.png';
 import cross from '../../assets/cross.png';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from '../../components/context';
 import {useNavigation} from '@react-navigation/core';
 import ButtomModal from '../../components/buttomModal/buttomModal';
-import SwipeModal from '../../components/swipeModal/swipeModal'
-const tabArray = [
-  {icon: bed, name: 'Room', activeIcon: activeBed, image: Kitchen},
-  {icon: chair, name: 'Palour', activeIcon: activechair, image: Kitchen},
-  {icon: micro, name: 'Kitchen', activeIcon: activemicro, image: Kitchen},
-  {icon: bathtop, name: 'Bathroom', activeIcon: activebathtop, image: Kitchen},
-  {icon: alarm, name: 'Alarm', activeIcon: activealarm, image: Kitchen},
-];
+import SwipeModal from '../../components/swipeModal/swipeModal';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const GetStarted = ({navigation}) => {
-  const {navigate} = useNavigation();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      let res = await AsyncStorage.getItem('newUser');
+      res = JSON.parse(res);
+      console.log(res);
+      setUser(res);
+    }
+
+    fetchUser();
+  }, []);
 
   const [active, setActive] = useState('');
+
   const [activeImage, setActiveImage] = useState('');
+
   const [showModal, setshowModal] = useState(false);
+
   let todays = new Date().getHours();
+
   const {authContext, loginState} = React.useContext(AuthContext);
+
   const {signOut} = authContext;
+
+  let rooms = user?.data.user_payload.Rooms;
+
   return (
     <SafeAreaView style={[Style.Container, Style.rowDirection]}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
@@ -59,7 +72,9 @@ const GetStarted = ({navigation}) => {
           <TouchableOpacity onPress={() => navigation.navigate('TaskScreen')}>
             <Image source={Bugger} />
           </TouchableOpacity>
-          <Text style={Style.Title}>Sweet home!</Text>
+          <Text style={Style.Title}>
+            {user?.data.user_payload.Homes[0] ? user?.data.user_payload.Homes[0].home_name : 'Sweet Home'}
+          </Text>
         </View>
         <View style={Style.subTitle}>
           <Text style={Style.greetingText}>
@@ -72,7 +87,10 @@ const GetStarted = ({navigation}) => {
               : null}
           </Text>
 
-          <Text style={Style.nameStyle}>Franklin</Text>
+          {console.log(user)}
+          <Text style={Style.nameStyle}>
+            {user?.data.user_details.first_name}
+          </Text>
         </View>
         <TouchableOpacity style={Style.kitchenStyle}>
           <Image
@@ -125,9 +143,15 @@ const GetStarted = ({navigation}) => {
             <View style={Style.tempStyle2}>
               <Image source={on} style={Style.iconStyle} />
               <View style={Style.rowDirection}>
-                <Text style={Style.ActiveDefaultTextColor}>10</Text>
+                <Text style={Style.ActiveDefaultTextColor}>
+                  {user ? user?.data.user_payload.Devices.length : 0}
+                </Text>
               </View>
-              <Text style={Style.defaultbuttomTabText}>Devices</Text>
+              <Text style={Style.defaultbuttomTabText}>
+                {user?.data.user_payload.Devices.length > 1
+                  ? 'Devices'
+                  : 'Device'}
+              </Text>
             </View>
           </View>
         </View>
@@ -140,33 +164,41 @@ const GetStarted = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={Style.SideIconTabWrapper}>
-          {tabArray.map((a, i) => {
+          {rooms?.map((room, key) => {
             return (
               <TouchableOpacity
-              onPress={() => setActive(a.name)}
-              style={
-                  active === a.name ? Style.activeStyleIcon : Style.sideIcon
+                onPress={() => setActive(room.room_name)}
+                style={
+                  active === room.room_name
+                    ? Style.activeStyleIcon
+                    : Style.sideIcon
                 }
-                key={i}>
-                <Image source={active === a.name ? a.activeIcon : a.icon} />
+                key={key}>
+                <Image
+                  source={
+                    active === room.room_name && room.room_type == 'kitchen'
+                      ? activeKitchenIcon
+                      : kitchenIcon
+                  }
+                />
               </TouchableOpacity>
             );
           })}
           <View>
             <TouchableOpacity
-              onPress={() => setshowModal(!showModal)}
+              onPress={() => {
+                signOut();
+              }}
               style={Style.buttomButton}>
               <Image source={cross} />
             </TouchableOpacity>
           </View>
         </View>
       </View>
-            {/* {showModal && (
+      {/* {showModal && (
         <ButtomModal setActive={setshowModal} activeState={showModal} />
       )} */}
-       {showModal && (
-      <SwipeModal setActive={setshowModal}/>
-      )}
+      {showModal && <SwipeModal setActive={setshowModal} />}
     </SafeAreaView>
   );
 };
