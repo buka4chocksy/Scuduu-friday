@@ -70,7 +70,7 @@ const Task = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('GetStartedScreen')}>
             <Image source={Bugger} />
-          </TouchableOpacity>
+          </TouchableOpacity> 
           <Text style={Style.Title}>Sweet home!</Text>
         </View>
         <View style={Style.subTitle}>
