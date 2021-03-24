@@ -8,7 +8,7 @@ import {
   StatusBar,
 } from 'react-native';
 import Style from './getStartedStyle';
-import Bugger from '../../assets/bugger.png';
+//import Bugger from '../../assets/bugger.png';
 import Bell from '../../assets/bell.png';
 import Kitchen from '../../assets/kitchen.png';
 import grey from '../../assets/grey.png';
@@ -30,13 +30,14 @@ import kitchenIcon from '../../assets/micro.png';
 import palor from '../../assets/palor.png';
 import cross from '../../assets/cross.png';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {AuthContext} from '../../components/context';
-import {useNavigation} from '@react-navigation/core';
 import ButtomModal from '../../components/buttomModal/buttomModal';
 import SwipeModal from '../../components/swipeModal/swipeModal';
 import AsyncStorage from '@react-native-community/async-storage';
+import Bugger from '../../components/handBugger';
+import ModalButtons from '../../components/modalButton';
 
 const GetStarted = ({navigation}) => {
+  // console.log(navigation, '======================================');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -58,10 +59,6 @@ const GetStarted = ({navigation}) => {
 
   let todays = new Date().getHours();
 
-  const {authContext, loginState} = React.useContext(AuthContext);
-
-  const {signOut} = authContext;
-
   let rooms = user?.data.user_payload.Rooms;
 
   return (
@@ -69,11 +66,12 @@ const GetStarted = ({navigation}) => {
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <View style={Style.mainView}>
         <View style={[Style.rowDirection, Style.flexEnd]}>
-          <TouchableOpacity onPress={() => navigation.navigate('TaskScreen')}>
-            <Image source={Bugger} />
-          </TouchableOpacity>
+          <Bugger route={navigation} />
+
           <Text style={Style.Title}>
-            {user?.data.user_payload.Homes[0] ? user?.data.user_payload.Homes[0].home_name : 'Sweet Home'}
+            {user?.data.user_payload.Homes[0]
+              ? user?.data.user_payload.Homes[0].home_name
+              : 'Sweet Home'}
           </Text>
         </View>
         <View style={Style.subTitle}>
@@ -185,13 +183,7 @@ const GetStarted = ({navigation}) => {
             );
           })}
           <View>
-            <TouchableOpacity
-              onPress={() => {
-                signOut();
-              }}
-              style={Style.buttomButton}>
-              <Image source={cross} />
-            </TouchableOpacity>
+            <ModalButtons />
           </View>
         </View>
       </View>

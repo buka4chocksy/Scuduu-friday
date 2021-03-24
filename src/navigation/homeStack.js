@@ -16,7 +16,7 @@ function HomeStack() {
       // }}
       initialRouteName="GetStartedScreen">
       <Home.Screen name="GetStartedScreen" component={GetStartedScreen} />
-      <Home.Screen name="TaskScreen" component={TaskScreen} />
+      {/* <Home.Screen name="TaskScreen" component={TaskScreen} /> */}
     </Home.Navigator>
   );
 }

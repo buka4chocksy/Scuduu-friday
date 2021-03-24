@@ -1,9 +1,6 @@
 import React from 'react';
 import Logo from '../../assets/logo.js';
 import {API_KEY} from '@env';
-
-const axios = require('axios').default;
-
 import {
   StyleSheet,
   Text,
@@ -14,15 +11,14 @@ import {
   Alert,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-
 import Feather from 'react-native-vector-icons/Feather';
-
 import {useTheme} from 'react-native-paper';
-
 import {AuthContext} from '../../components/context';
 import Button from '../../components/button';
 import Users from '../../../model/users';
 import {useNavigation} from '@react-navigation/core';
+
+const axios = require('axios').default;
 
 const SignInScreen = ({navigation}) => {
   const {navigate} = useNavigation();
@@ -40,6 +36,7 @@ const SignInScreen = ({navigation}) => {
 
   const {authContext, loginState} = React.useContext(AuthContext);
   const {signIn} = authContext;
+
   const textInputChange = (val) => {
     if (val.trim().length >= 4) {
       setData({
@@ -106,18 +103,15 @@ const SignInScreen = ({navigation}) => {
       })
       .catch((error) => console.log(error));
 
-
-    console.log(foundUser);    
+    console.log(foundUser);
     // const foundUser = Users.filter((item) => {
     //   return email == item.email && password == item.password;
     // });
 
     if (data.email.length == 0 || data.password.length == 0) {
-      Alert.alert(
-        'Wrong Input!',
-        'email or password field cannot be empty.',
-        [{text: 'Okay'}],
-      );
+      Alert.alert('Wrong Input!', 'email or password field cannot be empty.', [
+        {text: 'Okay'},
+      ]);
       return;
     }
 
@@ -129,9 +123,8 @@ const SignInScreen = ({navigation}) => {
     }
 
     if (foundUser.data.user_details.user_token) {
-      
       signIn(foundUser);
-      navigate('HomeScreen');
+      navigate('drawers');
     } else {
       console.log('Thief');
     }
@@ -283,8 +276,7 @@ const styles = StyleSheet.create({
   },
   forgotP: {
     alignItems: 'flex-end',
-    margin: 20
-
+    margin: 20,
   },
   text_header: {
     color: '#555555',
@@ -314,7 +306,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingRight: 20,
     paddingLeft: 20,
-    height: 85
+    height: 85,
   },
   action: {
     flexDirection: 'row',

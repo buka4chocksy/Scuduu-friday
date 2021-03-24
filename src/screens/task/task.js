@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StatusBar, Image, ScrollView, SafeAreaView} from 'react-native';
 import Style from './taskStyle';
-import Bugger from '../../assets/bugger.png';
+//import Bugger from '../../assets/bugger.png';
 import Bell from '../../assets/bell.png';
 import bed from '../../assets/bed.png';
 import activeBed from '../../assets/activebed.png';
@@ -16,7 +16,7 @@ import activemicro from '../../assets/kitchenactive.png';
 import cross from '../../assets/cross.png';
 import switchLogo from '../../assets/switch.png';
 import Device from '../../components/device';
-
+import Bugger from '../../components/handBugger';
 const tabArray = [
   {icon: bed, name: 'Room', activeIcon: activeBed},
   {icon: chair, name: 'Palour', activeIcon: activechair},
@@ -67,10 +67,10 @@ const Task = ({navigation}) => {
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <View style={Style.mainView}>
         <View style={[Style.rowDirection, Style.flexEnd]}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('GetStartedScreen')}>
+          {/* <TouchableOpacity>
             <Image source={Bugger} />
-          </TouchableOpacity> 
+          </TouchableOpacity> */}
+          <Bugger route={navigation}/>
           <Text style={Style.Title}>Sweet home!</Text>
         </View>
         <View style={Style.subTitle}>

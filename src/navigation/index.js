@@ -11,9 +11,15 @@ import {ActivityIndicator, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation, useNavigationBuilder} from '@react-navigation/core';
 
+import {Drawer} from './common';
+import DrawerStack from './drawStack';
+
 const Root = Stack;
+// const Root = Drawer;
 
 function MainNavigator() {
+
+  
   const globlaScreenOptions = {
     headerShown: false,
   };
@@ -133,7 +139,15 @@ function MainNavigator() {
       signOut: async () => {
         // setUserToken(null);
         // setIsLoading(false);
-        console.log(loginState.userToken);
+        if (loginState.userToken == null) {
+          console.log('====================================');
+          console.log('Succesfullt loged out');
+          console.log('====================================');
+        } else {
+          console.log('====================================');
+          console.log('User is still logged in');
+          console.log('====================================');
+        }
         try {
           await AsyncStorage.removeItem('userToken');
           await AsyncStorage.removeItem('newUser');
@@ -169,10 +183,11 @@ function MainNavigator() {
       <Root.Navigator screenOptions={globlaScreenOptions}>
         <Root.Screen name={'SplashScreen'} component={SplashScreen} />
         <Root.Screen name={'OneTimePass'} component={OneTimePass} />
-        <Root.Screen name={'HomeScreen'} component={HomeStack} />
+        {/* <Root.Screen name={'HomeScreen'} component={HomeStack} /> */}
         <Root.Screen name={'OnBoardingScreen'} component={onBoardingScreen} />
         <Root.Screen name={'SignInScreen'} component={SignInScreen} />
         <Root.Screen name={'SignUpScreen'} component={SignUpScreen} />
+        <Root.Screen name={'drawers'} component={DrawerStack} />
       </Root.Navigator>
     </AuthContext.Provider>
   );

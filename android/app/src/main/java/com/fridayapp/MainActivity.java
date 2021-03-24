@@ -1,6 +1,10 @@
 package com.fridayapp;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate; // add this
+import com.facebook.react.ReactRootView; // add this
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView; // add this
+
 
 public class MainActivity extends ReactActivity {
 

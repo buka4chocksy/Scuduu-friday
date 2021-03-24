@@ -15,7 +15,7 @@ const SplashScreen = () => {
       const value = await AsyncStorage.getItem('userToken');
 
       if (value) {
-        navigate('HomeScreen');
+        navigate('drawers');
       } else {
         navigate('SignInScreen');
       }
